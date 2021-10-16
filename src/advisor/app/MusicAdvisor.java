@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MusicAdvisor {
-    public static void startMusicAdvisor(String access, String resource, int entriesPerPage) {
+    public static void startMusicAdvisor(String[] parameters) {
+        String access = parameters[0];
+        String resource = parameters[1];
+        String entriesPerPage = parameters[2];
         Authentication authentication = new Authentication(access);
         Api api = new Api(resource, authentication);
         Scanner scanner = new Scanner(System.in);

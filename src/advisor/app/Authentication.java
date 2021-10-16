@@ -29,8 +29,8 @@ public class Authentication {
     public static void setAccessCode() {
         String uri =
                 Authentication.serverPath + "/authorize?client_id=" +
-                CLIENT_ID + "&response_type=code&redirect_uri=" +
-                REDIRECT_URI;
+                        CLIENT_ID + "&response_type=code&redirect_uri=" +
+                        REDIRECT_URI;
         System.out.println("use this link to request the access code:");
         System.out.println(uri);
         try {
