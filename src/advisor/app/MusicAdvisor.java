@@ -2,6 +2,7 @@ package advisor.app;
 
 import advisor.entitie.Category;
 import advisor.entitie.Release;
+import advisor.view.StateViewer;
 import advisor.view.Viewer;
 import advisor.view.ViewerImpl;
 
@@ -47,8 +48,12 @@ public class MusicAdvisor {
                     if (provide) {
                         List<Category> categories = new ArrayList<>();
                         api.getAllCategories(categories);
-                        Viewer viewer = new ViewerImpl(categories, entriesPerPage);
-                        viewer.printPage(1);
+                        Viewer viewer = new ViewerImpl(categories, entriesPerPage, scanner);
+                        while (viewer.getState().equals(StateViewer.FIRST) ||
+                                viewer.getState().equals(StateViewer.INTERMEDIATE) ||
+                                viewer.getState().equals(StateViewer.LAST)) {
+                            viewer.handle();
+                        }
                     } else {
                         System.out.println("Please, provide access for application.");
                     }
