@@ -6,5 +6,6 @@ import advisor.model.AppParameters;
 public class Main {
     public static void main(String[] args) {
         MusicAdvisor.startMusicAdvisor(AppParameters.getParameters(args));
+        System.exit(0);
     }
 }

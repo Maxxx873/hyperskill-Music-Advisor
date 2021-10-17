@@ -1,6 +1,8 @@
 package advisor.app;
 
 import advisor.entitie.Category;
+import advisor.entitie.Features;
+import advisor.entitie.Playlist;
 import advisor.entitie.Release;
 import advisor.json.JSONParser;
 
@@ -35,7 +37,7 @@ public class Api {
         }
     }
 
-    public void getFeaturedPlaylists() {
+    public void getFeaturedPlaylists(List<Features> features) {
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Authorization", "Bearer " + authentication.getAccessToken())
                 .uri(URI.create(resource + "/v1/browse/featured-playlists"))
@@ -44,7 +46,7 @@ public class Api {
         try {
             HttpClient client = HttpClient.newBuilder().build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JSONParser.parseFeatures(response.body());
+            JSONParser.parseFeatures(response.body(), features);
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
@@ -66,7 +68,7 @@ public class Api {
     }
 
 
-    public void getPlaylists(String categoryId) {
+    public void getPlaylists(String categoryId, List<Playlist> playlists) {
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Authorization", "Bearer " + authentication.getAccessToken())
                 .uri(URI.create(resource + "/v1/browse/categories/" + categoryId + "/playlists"))
@@ -75,7 +77,7 @@ public class Api {
         try {
             HttpClient client = HttpClient.newBuilder().build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JSONParser.parsePlayLists(response.body());
+            JSONParser.parsePlayLists(response.body(), playlists);
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }

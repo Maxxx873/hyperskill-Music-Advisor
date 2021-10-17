@@ -1,13 +1,11 @@
 package advisor.entitie;
 
-public class Release {
+public class Features {
     private String name;
-    private String artist;
     private String link;
 
-    public Release(String name, String artist, String link) {
+    public Features(String name, String link) {
         this.name = name;
-        this.artist = artist;
         this.link = link;
     }
 
@@ -19,14 +17,6 @@ public class Release {
         this.name = name;
     }
 
-    public String getArtist() {
-        return artist;
-    }
-
-    public void setArtist(String artist) {
-        this.artist = artist;
-    }
-
     public String getLink() {
         return link;
     }
@@ -34,9 +24,9 @@ public class Release {
     public void setLink(String link) {
         this.link = link;
     }
-    @Override
-    public String toString () {
-        return name + "\n" + artist + "\n" + link + "\n";
-    }
 
+    @Override
+    public String toString() {
+        return name + "\n" + link + "\n";
+    }
 }

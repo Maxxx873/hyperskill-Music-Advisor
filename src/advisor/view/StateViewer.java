@@ -1,6 +1,6 @@
 package advisor.view;
 
 public enum StateViewer {
-    FIRST, INTERMEDIATE, LAST
+    AUTH, NEW, FEATURED, CATEGORIES, PLAYLISTS, FIRST, INTERMEDIATE, LAST, EXIT
 }
 

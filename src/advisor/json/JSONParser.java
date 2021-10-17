@@ -1,5 +1,7 @@
 package advisor.json;
 import advisor.entitie.Category;
+import advisor.entitie.Features;
+import advisor.entitie.Playlist;
 import advisor.entitie.Release;
 import com.google.gson.*;
 import java.util.Iterator;
@@ -23,7 +25,7 @@ public class JSONParser {
 
     }
 
-    public static void parseFeatures(String json) {
+    public static void parseFeatures(String json, List<Features> features) {
 
         JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
         JsonArray categoriesObjArr = jsonObject
@@ -33,16 +35,13 @@ public class JSONParser {
         Iterator categoriesItr = categoriesObjArr.iterator();
         while (categoriesItr.hasNext()) {
             JsonObject nameObj = (JsonObject) categoriesItr.next();
-            System.out.println(nameObj.get("name").getAsString());
-            System.out.println(nameObj.getAsJsonObject("external_urls")
-                    .get("spotify")
-                    .getAsString() + "\n");
+            features.add(new Features(nameObj.get("name").getAsString(),
+                    nameObj.getAsJsonObject("external_urls").get("spotify").getAsString()));
         }
 
     }
 
     public static void parseNewReleases(String json, List<Release> releases) {
-        String artist = new String();
 
         JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
         JsonArray categoriesObjArr = jsonObject
@@ -72,10 +71,9 @@ public class JSONParser {
 
         }
 
-        releases.stream().forEach(Release::print);
     }
 
-    public static void parsePlayLists(String json) {
+    public static void parsePlayLists(String json, List<Playlist> playlists) {
         JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
         if(json.contains("message")) {
             System.out.println(jsonObject);
@@ -88,10 +86,10 @@ public class JSONParser {
         Iterator categoriesItr = categoriesObjArr.iterator();
         while (categoriesItr.hasNext()) {
             JsonObject nameObj = (JsonObject) categoriesItr.next();
-            System.out.println(nameObj.get("name").getAsString());
-            System.out.println(nameObj.getAsJsonObject("external_urls")
-                    .get("spotify")
-                    .getAsString() + "\n");
+            playlists.add(new Playlist(nameObj.get("name").getAsString(),
+                    nameObj.getAsJsonObject("external_urls").get("spotify").getAsString()));
+
+
         }
     }
 
