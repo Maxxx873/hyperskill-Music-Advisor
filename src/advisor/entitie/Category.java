@@ -1,8 +1,8 @@
 package advisor.entitie;
 
 public class Category {
-    String id;
-    String name;
+    private String id;
+    private String name;
 
     public Category(String id, String name) {
         this.id = id;
@@ -14,6 +14,10 @@ public class Category {
     }
 
     public String getName() {
+        return name;
+    }
+    @Override
+    public String toString () {
         return name;
     }
 }

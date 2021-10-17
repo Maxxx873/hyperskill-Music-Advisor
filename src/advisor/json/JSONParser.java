@@ -1,5 +1,6 @@
 package advisor.json;
 import advisor.entitie.Category;
+import advisor.entitie.Release;
 import com.google.gson.*;
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +41,8 @@ public class JSONParser {
 
     }
 
-    public static void parseNewReleases(String json) {
+    public static void parseNewReleases(String json, List<Release> releases) {
+        String artist = new String();
 
         JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
         JsonArray categoriesObjArr = jsonObject
@@ -49,26 +51,28 @@ public class JSONParser {
 
         Iterator categoriesItr = categoriesObjArr.iterator();
         while (categoriesItr.hasNext()) {
+            StringBuilder stringBuilder = new StringBuilder();
             JsonObject nameObj = (JsonObject) categoriesItr.next();
-            System.out.println(nameObj.get("name").getAsString());
-
             JsonArray artistsArr = nameObj.getAsJsonArray("artists");
             Iterator artistsItr = artistsArr.iterator();
-            System.out.print("[");
+            stringBuilder.append("[");
             while (artistsItr.hasNext()) {
                 JsonObject artistObj = (JsonObject) artistsItr.next();
-                System.out.print(artistObj.get("name").getAsString());
+                stringBuilder.append(artistObj.get("name").getAsString());
                 if(artistsItr.hasNext()) {
-                    System.out.print(", ");
+                    stringBuilder.append(", ");
                 }
             }
-            System.out.print("]");
-            System.out.println();
+            stringBuilder.append("]");
+            releases.add(new Release(nameObj.get("name").getAsString(),
+                    stringBuilder.toString(),
+                    nameObj.getAsJsonObject("external_urls")
+                            .get("spotify")
+                            .getAsString()));
 
-            System.out.println(nameObj.getAsJsonObject("external_urls")
-                    .get("spotify")
-                    .getAsString() + "\n");
         }
+
+        releases.stream().forEach(Release::print);
     }
 
     public static void parsePlayLists(String json) {

@@ -1,6 +1,9 @@
 package advisor.app;
 
 import advisor.entitie.Category;
+import advisor.entitie.Release;
+import advisor.view.Viewer;
+import advisor.view.ViewerImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +16,15 @@ public class MusicAdvisor {
         String entriesPerPage = parameters[2];
         Authentication authentication = new Authentication(access);
         Api api = new Api(resource, authentication);
+
         Scanner scanner = new Scanner(System.in);
         boolean provide = false;
         for (;;) {
             String command = scanner.nextLine();
             switch (command) {
                 case "auth":
-                    authentication.setAccessCode();
-                    authentication.setAccessToken();
+                    Authentication.setAccessCode();
+                    Authentication.setAccessToken();
                     provide = true;
                     System.out.println("Success!");
                     break;
@@ -32,8 +36,9 @@ public class MusicAdvisor {
                     }
                     break;
                 case "new":
+                    List<Release> releases = new ArrayList<>();
                     if (provide) {
-                        api.getNewReleases();
+                        api.getNewReleases(releases);
                     } else {
                         System.out.println("Please, provide access for application.");
                     }
@@ -42,9 +47,8 @@ public class MusicAdvisor {
                     if (provide) {
                         List<Category> categories = new ArrayList<>();
                         api.getAllCategories(categories);
-                        categories.stream()
-                                .map(s -> s.getName())
-                                .forEach(System.out::println);
+                        Viewer viewer = new ViewerImpl(categories, entriesPerPage);
+                        viewer.printPage(1);
                     } else {
                         System.out.println("Please, provide access for application.");
                     }

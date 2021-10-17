@@ -1,6 +1,7 @@
 package advisor.app;
 
 import advisor.entitie.Category;
+import advisor.entitie.Release;
 import advisor.json.JSONParser;
 
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class Api {
         }
     }
 
-    public void getNewReleases() {
+    public void getNewReleases(List<Release> releases) {
         HttpRequest request = HttpRequest.newBuilder()
                 .header("Authorization", "Bearer " + authentication.getAccessToken())
                 .uri(URI.create(resource + "/v1/browse/new-releases"))
@@ -58,7 +59,7 @@ public class Api {
         try {
             HttpClient client = HttpClient.newBuilder().build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JSONParser.parseNewReleases(response.body());
+            JSONParser.parseNewReleases(response.body(), releases);
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
