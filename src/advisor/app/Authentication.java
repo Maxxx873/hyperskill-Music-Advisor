@@ -17,13 +17,9 @@ public class Authentication {
     private static String accessCode;
 
     public Authentication(String serverPath) {
-        this.serverPath = serverPath;
+        Authentication.serverPath = serverPath;
         accessCode = "";
         accessToken = "";
-    }
-
-    public String getServerPath() {
-        return serverPath;
     }
 
     public static void setAccessCode() {

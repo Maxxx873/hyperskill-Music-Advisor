@@ -12,4 +12,6 @@ public interface Viewer <T> {
 
     Viewer handle();
     StateViewer getState();
+    void setState(StateViewer state);
+    String getCategoryName();
 }

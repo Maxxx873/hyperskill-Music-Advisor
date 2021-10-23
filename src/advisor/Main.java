@@ -1,11 +1,10 @@
 package advisor;
 
 import advisor.app.MusicAdvisor;
-import advisor.model.AppParameters;
+import advisor.app.AppParameters;
 
 public class Main {
     public static void main(String[] args) {
         MusicAdvisor.startMusicAdvisor(AppParameters.getParameters(args));
-        System.exit(0);
     }
 }

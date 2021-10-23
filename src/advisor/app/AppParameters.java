@@ -1,4 +1,4 @@
-package advisor.model;
+package advisor.app;
 
 
 public class AppParameters {

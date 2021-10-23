@@ -19,98 +19,85 @@ public class MusicAdvisor {
         String entriesPerPage = parameters[2];
         Authentication authentication = new Authentication(access);
         Api api = new Api(resource, authentication);
-        Viewer viewer = new ViewerImpl<>();
-
-        String command = new String();
         Scanner scanner = new Scanner(System.in);
+        Viewer viewer = new ViewerImpl<>(scanner);
         boolean provide = false;
         while(!viewer.getState().equals(StateViewer.EXIT)) {
-            command = scanner.nextLine();
-            switch (command) {
-                case "auth":
+            switch (viewer.getState()) {
+                case INPUT_COMMAND:
+                    viewer.handle();
+                    break;
+                case AUTH:
                     Authentication.setAccessCode();
                     Authentication.setAccessToken();
                     provide = true;
                     System.out.println("Success!");
+                    viewer.setState(StateViewer.INPUT_COMMAND);
+                    viewer.handle();
                     break;
-                case "featured":
+                case FEATURED:
                     List<Features> features = new ArrayList<>();
                     if (provide) {
                         api.getFeaturedPlaylists(features);
                         viewer.viewerSet(features, entriesPerPage, scanner);
-                        while (viewer.getState().equals(StateViewer.FIRST) ||
-                                viewer.getState().equals(StateViewer.INTERMEDIATE) ||
-                                viewer.getState().equals(StateViewer.LAST)) {
-                            viewer.handle();
-                        }
+                        viewer.handle();
                     } else {
                         System.out.println("Please, provide access for application.");
+                        viewer.setState(StateViewer.INPUT_COMMAND);
                     }
                     break;
-                case "new":
+                case NEW:
                     List<Release> releases = new ArrayList<>();
                     if (provide) {
                         api.getNewReleases(releases);
                         viewer.viewerSet(releases, entriesPerPage, scanner);
-                        while (viewer.getState().equals(StateViewer.FIRST) ||
-                                viewer.getState().equals(StateViewer.INTERMEDIATE) ||
-                                viewer.getState().equals(StateViewer.LAST)) {
-                            viewer.handle();
-                        }
+                        viewer.handle();
                     } else {
                         System.out.println("Please, provide access for application.");
+                        viewer.setState(StateViewer.INPUT_COMMAND);
                     }
                     break;
-                case "categories":
+                case CATEGORIES:
                     if (provide) {
                         List<Category> categories = new ArrayList<>();
                         api.getAllCategories(categories);
                         viewer.viewerSet(categories, entriesPerPage, scanner);
-                        while (viewer.getState().equals(StateViewer.FIRST) ||
-                                viewer.getState().equals(StateViewer.INTERMEDIATE) ||
-                                viewer.getState().equals(StateViewer.LAST)) {
-                            viewer.handle();
-                        }
-
+                        viewer.handle();
                     } else {
                         System.out.println("Please, provide access for application.");
+                        viewer.setState(StateViewer.INPUT_COMMAND);
                     }
                     break;
-                default:
-                    String keyWord = "playlists ";
-                    if(command.indexOf(keyWord) == 0) {
+                case PLAYLISTS:
                         if (provide) {
-                            String categoryName = command.substring(keyWord.length());
                             List<Category> categories = new ArrayList<>();
                             api.getAllCategories(categories);
                             if (categories.stream()
-                                    .map(category -> category.getName())
-                                    .noneMatch(categoryName::equals)) {
+                                    .map(Category::getName)
+                                    .noneMatch(viewer.getCategoryName()::equals)) {
                                 System.out.println("Unknown category name.");
                             } else {
                                 List<Playlist> playlists = new ArrayList<>();
                                 String categoryId = categories
                                         .stream()
-                                        .filter(category -> category.getName().equals(categoryName))
+                                        .filter(category -> category.getName().equals(viewer.getCategoryName()))
                                         .findFirst()
                                         .get()
                                         .getId();
                                 api.getPlaylists(categoryId, playlists);
                                 viewer.viewerSet(playlists, entriesPerPage, scanner);
-                                while (viewer.getState().equals(StateViewer.FIRST) ||
-                                        viewer.getState().equals(StateViewer.INTERMEDIATE) ||
-                                        viewer.getState().equals(StateViewer.LAST)) {
-                                    viewer.handle();
-                                }
+                                viewer.handle();
                             }
 
 
                         } else {
                             System.out.println("Please, provide access for application.");
+                            viewer.setState(StateViewer.INPUT_COMMAND);
                         }
-                    }
+
                     break;
-                case "exit":
+                case EXIT:
+                    scanner.close();
                     return;
             }
         }

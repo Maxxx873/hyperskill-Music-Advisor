@@ -5,17 +5,17 @@ import advisor.entitie.Features;
 import advisor.entitie.Playlist;
 import advisor.entitie.Release;
 import advisor.json.JSONParser;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.Objects;
 
 public class Api {
     private String resource;
     private Authentication authentication;
+
+    final String GET_CATEGORIES = "/v1/browse/categories";
+    final String GET_FEATURED_PLAYLISTS = "/v1/browse/featured-playlists";
+    final String GET_NEW_RELEASES = "/v1/browse/new-releases";
+    final String GET_PLAYLISTS = "/playlists";
 
     public Api(String resource, Authentication authentication) {
         this.resource = resource;
@@ -23,63 +23,28 @@ public class Api {
     }
 
     public void getAllCategories(List<Category> categories) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .header("Authorization", "Bearer " + authentication.getAccessToken())
-                .uri(URI.create(resource + "/v1/browse/categories"))
-                .GET()
-                .build();
-        try {
-            HttpClient client = HttpClient.newBuilder().build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JSONParser.parseCategories(response.body(), categories);
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
+        JSONParser.parseCategories(Objects.requireNonNull(RequestBuilder
+                .requestBuild(resource, authentication, GET_CATEGORIES)).body(),
+                categories);
     }
 
     public void getFeaturedPlaylists(List<Features> features) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .header("Authorization", "Bearer " + authentication.getAccessToken())
-                .uri(URI.create(resource + "/v1/browse/featured-playlists"))
-                .GET()
-                .build();
-        try {
-            HttpClient client = HttpClient.newBuilder().build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JSONParser.parseFeatures(response.body(), features);
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
+        JSONParser.parseFeatures(Objects.requireNonNull(RequestBuilder
+                        .requestBuild(resource, authentication, GET_FEATURED_PLAYLISTS)).body(),
+                features);
     }
 
     public void getNewReleases(List<Release> releases) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .header("Authorization", "Bearer " + authentication.getAccessToken())
-                .uri(URI.create(resource + "/v1/browse/new-releases"))
-                .GET()
-                .build();
-        try {
-            HttpClient client = HttpClient.newBuilder().build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JSONParser.parseNewReleases(response.body(), releases);
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
+        JSONParser.parseNewReleases(Objects.requireNonNull(RequestBuilder
+                        .requestBuild(resource, authentication, GET_NEW_RELEASES)).body(),
+                releases);
     }
 
 
     public void getPlaylists(String categoryId, List<Playlist> playlists) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .header("Authorization", "Bearer " + authentication.getAccessToken())
-                .uri(URI.create(resource + "/v1/browse/categories/" + categoryId + "/playlists"))
-                .GET()
-                .build();
-        try {
-            HttpClient client = HttpClient.newBuilder().build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JSONParser.parsePlayLists(response.body(), playlists);
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
+        JSONParser.parsePlayLists(Objects.requireNonNull(RequestBuilder
+                .requestBuild(resource, authentication, GET_CATEGORIES
+                + "/" + categoryId + GET_PLAYLISTS)).body(), playlists);
+
     }
 }
